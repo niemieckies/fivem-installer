@@ -31,7 +31,7 @@ runCommand(){
     fi
 }
 
-dir=/home/FiveM
+dir=/home/FiveM2
 
 update_artifacts=false
 non_interactive=false
@@ -92,8 +92,8 @@ function examServData() {
 
   cat << EOF > $dir/server-data/server.cfg
 # Only change the IP if you're using a server with multiple network interfaces, otherwise change the port only.
-endpoint_add_tcp "0.0.0.0:30120"
-endpoint_add_udp "0.0.0.0:30120"
+endpoint_add_tcp "0.0.0.0:30121"
+endpoint_add_udp "0.0.0.0:30121"
 
 # These resources will start by default.
 ensure mapmanager
@@ -177,12 +177,12 @@ EOF
 }
 
 function checkPort(){
-    lsof -i :40120
+    lsof -i :40125
     if [[ $( echo $? ) == 0 ]]; then
         if [[ "${non_interactive}" == "false" ]]; then
             if [[ "${kill_txAdmin}" == "0" ]]; then
                 status "It looks like there already is something running on the default TxAdmin port. Can we stop/kill it?" "/"
-                export OPTIONS=("Kill PID on port 40120" "Exit the script")
+                export OPTIONS=("Kill PID on port 40125" "Exit the script")
                 bashSelect
 
                 case $? in
@@ -196,9 +196,9 @@ function checkPort(){
             fi
         fi
         if [[ "${kill_txAdmin}" == "true" ]]; then
-            status "killing PID on 40120"
+            status "killing PID on 40125"
             runCommand "apt -y install psmisc"
-            runCommand "fuser -4 40120/tcp -k"
+            runCommand "fuser -4 40125/tcp -k"
             return
         fi
 
@@ -334,7 +334,7 @@ red="\e[0;91m"
 green="\e[0;92m"
 bold="\e[1m"
 reset="\e[0m"
-port=\$(lsof -Pi :40120 -sTCP:LISTEN -t)
+port=\$(lsof -Pi :40125 -sTCP:LISTEN -t)
 if [ -z "\$port" ]; then
     screen -dmS fivem sh $dir/server/run.sh
     echo -e "\n\${green}TxAdmin was started!\${reset}"
@@ -351,7 +351,7 @@ EOF
     runCommand "chmod +x $dir/stop.sh"
 
 
-    port=$(lsof -Pi :40120 -sTCP:LISTEN -t)
+    port=$(lsof -Pi :40125 -sTCP:LISTEN -t)
 
     if [[ -z "$port" ]]; then
 
